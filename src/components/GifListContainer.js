@@ -1,38 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import GifSearch from './GifSearch';
-import GifList from './GifList';
 
-export default function GifListContainer() {
-  const [gifs, setGifs] = useState([]);
-  const [query, setQuery] = useState(''); // State to store the search query
+import React, { Component } from "react";
+import GifList from "./GifList";
+import GifSearch from "./GifSearch";
 
-  useEffect(()=>(
-    fetchGifs()
-  ))
-  const fetchGifs = () => {
-    fetch(`https://api.giphy.com/v1/gifs/search?q=${query}&api_key=dc6zaTOxFJmzC&rating=g`)
-      .then((response) => response.json())
-      .then((data) => {
-        // Extract the first 3 gifs from the response
-        const firstThreeGifs = data.data.slice(0, 3);
-        setGifs(firstThreeGifs);
+class GifListContainer extends Component {
+  state = {
+    gifs: []
+  };
+
+  handleSearch = (query) => {
+    fetch(`https://api.giphy.com/v1/gifs/search?q=${query}&api_key=I9LQvL30976V3FKHoXHkfpGAQD6I1fVQ&rating=g`)
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ gifs: data.data.slice(0, 3) }); // Update state with the first 3 gifs
+      })
+      .catch(error => {
+        console.error("Error fetching data:", error);
       });
   };
 
-  // Function to handle form submission from GifSearch
-  const handleSearchSubmit = (newQuery) => {
-    setQuery(newQuery);
-    fetchGifs();
-  };
-
-  return (
-    <div>
-      <GifSearch onSearchSubmit={handleSearchSubmit} />
-      {gifs.length > 0 ? (
-        <GifList gifs={gifs} />
-      ) : (
-        <p>No GIFs found. Please search for something.</p>
-      )}
-    </div>
-  );
+  render() {
+    return (
+      <div>
+        <GifSearch onSearch={this.handleSearch} />
+        <GifList gifs={this.state.gifs} />
+      </div>
+    );
+  }
 }
+
+export default GifListContainer;

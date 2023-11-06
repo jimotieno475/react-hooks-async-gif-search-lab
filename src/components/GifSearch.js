@@ -1,31 +1,28 @@
-import React, { useState } from 'react';
 
-export default function GifSearch({ onSearchSubmit }) {
-  const [searchQuery, setSearchQuery] = useState('');
+import React, { Component } from "react";
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    onSearchSubmit(searchQuery); // Invoke the callback prop with the search query
+class GifSearch extends Component {
+  state = {
+    query: ""
   };
-  function handleChange(event) {
-    setSearchQuery(event.target.value);
-  }
 
-  return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <div className='form-group'>
+  handleSubmit = (event) => {
+    event.preventDefault();
+    this.props.onSearch(this.state.query);
+  };
+
+  render() {
+    return (
+      <form onSubmit={this.handleSubmit}>
         <input
-          id="search"
-          className="form-control"
           type="text"
-          value={searchQuery}
-          onChange={handleChange}
-          placeholder="Search for GIFs"
+          value={this.state.query}
+          onChange={(e) => this.setState({ query: e.target.value })}
         />
-        </div>
-        <button type="submit" className='btn btn-success'>Search</button>
+        <button type="submit">Search</button>
       </form>
-    </div>
-  );
+    );
+  }
 }
+
+export default GifSearch;
